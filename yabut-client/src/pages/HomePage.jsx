@@ -1,7 +1,7 @@
 import Button from '../components/Button';
-import modernLayout from '../assets/modernlayout.png'
-import readable  from '../assets/readable.png'
-import reusable from '../assets/reusable.png'
+import modernLayout from '../assets/images/modernlayout.png'
+import readable  from '../assets/images/readable.png'
+import reusable from '../assets/images/reusable.png'
 
 const HomePage = () => {
   return (
