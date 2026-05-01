@@ -1,7 +1,7 @@
-import Button from '../components/Button';
-import modernLayout from '../assets/images/modernlayout.png'
-import readable  from '../assets/images/readable.png'
-import reusable from '../assets/images/reusable.png'
+import Button from "../../components/Button";
+import modernLayout from "../../assets/images/modernlayout.png";
+import readable from "../../assets/images/readable.png";
+import reusable from "../../assets/images/reusable.png";
 
 const HomePage = () => {
   return (
@@ -13,16 +13,21 @@ const HomePage = () => {
               Designing simple layouts with clarity, structure, and purpose.
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-zinc-600 sm:text-lg">
-              Draft & Drift is a design-focused web project that turns basic wireframes
-              into polished digital experiences. Through better hierarchy, strong
-              spacing, image-led sections, and thoughtful presentation, simple layouts
-              become more engaging and easier to understand.
+              Draft & Drift is a design-focused web project that turns basic
+              wireframes into polished digital experiences. Through better
+              hierarchy, strong spacing, image-led sections, and thoughtful
+              presentation, simple layouts become more engaging and easier to
+              understand.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button to="/about" variant="primary">
-                Learn More
-              </Button>
+              <Button
+      to="/about"
+      variant="primary"
+      className="border-2 border-zinc-900 hover:bg-zinc-900 hover:text-white transition"
+    >
+      Learn More
+    </Button>
             </div>
           </div>
 
@@ -45,10 +50,10 @@ const HomePage = () => {
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            ['12', 'Projects'],
-            ['08', 'Sections'],
-            ['24', 'Screens'],
-            ['04', 'Layouts'],
+            ["12", "Projects"],
+            ["08", "Sections"],
+            ["24", "Screens"],
+            ["04", "Layouts"],
           ].map(([value, label]) => (
             <div
               key={label}
@@ -65,28 +70,27 @@ const HomePage = () => {
 
       <section className="border-t border-zinc-200 bg-zinc-50 px-4 py-14 sm:px-6 lg:px-8">
         <div className="mb-6">
-        <h2 className="text-2xl font-bold text-zinc-900">
+          <h2 className="text-2xl font-bold text-zinc-900">
             Simple wireframe cards
-        </h2>
+          </h2>
         </div>
 
         <div className="grid gap-5 md:grid-cols-3">
           {[
             {
-              title: 'Modern Layout',
-              text: 'A clean structure makes the website easier to scan and understand for users.',
-              image:modernLayout,
+              title: "Modern Layout",
+              text: "A clean structure makes the website easier to scan and understand for users.",
+              image: modernLayout,
             },
             {
-              title: 'Readable Content',
-              text: 'Proper spacing and clear sections help present information more effectively.',
-              image:readable,
-                
+              title: "Readable Content",
+              text: "Proper spacing and clear sections help present information more effectively.",
+              image: readable,
             },
             {
-              title: 'Reusable Design',
-              text: 'Cards and sections can be reused on multiple pages for consistency.',
-                image:reusable,
+              title: "Reusable Design",
+              text: "Cards and sections can be reused on multiple pages for consistency.",
+              image: reusable,
             },
           ].map((item) => (
             <article
@@ -99,8 +103,12 @@ const HomePage = () => {
                 className="h-48 w-full object-cover"
               />
               <div className="p-5">
-                <h3 className="text-lg font-bold text-zinc-900">{item.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-zinc-600">{item.text}</p>
+                <h3 className="text-lg font-bold text-zinc-900">
+                  {item.title}
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-zinc-600">
+                  {item.text}
+                </p>
                 <Button className="mt-4" variant="primary">
                   View More
                 </Button>
@@ -116,9 +124,9 @@ const HomePage = () => {
             Build better pages through simple, thoughtful design.
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-zinc-600">
-            Strong layouts do not need to be complicated. With the right structure,
-            clearer content, and consistent styling, even a basic wireframe can feel
-            polished and modern.
+            Strong layouts do not need to be complicated. With the right
+            structure, clearer content, and consistent styling, even a basic
+            wireframe can feel polished and modern.
           </p>
           <div className="mt-8 flex justify-center gap-3">
             <Button to="/about" variant="primary">
