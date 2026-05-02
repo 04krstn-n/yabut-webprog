@@ -10,7 +10,7 @@ const AuthLayout = () => {
   const content = isSignup
   ? {
       eyebrow: "Create Account",
-      title: "Build your creative library.",
+      title: "Build your creative library and explore.",
       description:
         "Create a Draft & Drift account to save your purchases, download digital products, and access curated templates, brand kits, and design assets anytime.",
       imagePosition: "right center",
