@@ -8,20 +8,20 @@ const AuthLayout = () => {
   const isSignup = location.pathname.includes('/signup');
 
   const content = isSignup
-    ? {
-        eyebrow: 'Create Account',
-        title: 'Start your BulldogEx journey.',
-        description:
-          'Create an account to explore campus essentials, school merchandise, and student-ready items in one clean marketplace.',
-        imagePosition: 'right center',
-      }
-    : {
-        eyebrow: 'Welcome Back',
-        title: 'Access your account smoothly.',
-        description:
-          'Log in to continue browsing campus essentials through a calm, modern, and easy shopping experience.',
-        imagePosition: 'left center',
-      };
+  ? {
+      eyebrow: "Create Account",
+      title: "Build your creative library.",
+      description:
+        "Create a Draft & Drift account to save your purchases, download digital products, and access curated templates, brand kits, and design assets anytime.",
+      imagePosition: "right center",
+    }
+  : {
+      eyebrow: "Welcome Back",
+      title: "Return to your design workspace.",
+      description:
+        "Log in to access your purchased digital products, manage your downloads, and continue exploring clean, ready-to-use creative assets.",
+      imagePosition: "left center",
+    };
 
   return (
     <section className="min-h-screen overflow-hidden bg-[#0b1220]">
