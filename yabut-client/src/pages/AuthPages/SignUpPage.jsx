@@ -1,5 +1,7 @@
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
+import { createUser } from "../../services/UserService";
 
 const inputClasses =
   "mt-2 w-full rounded-2xl border-2 border-zinc-900 bg-zinc-100 px-4 py-3 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:bg-white focus:shadow-[4px_4px_0_#18181b]";
@@ -8,6 +10,124 @@ const actionButtonClassName =
   "w-full rounded-2xl py-3 text-[11px] font-bold uppercase tracking-[0.2em]";
 
 const SignUpPage = () => {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    age: "",
+    gender: "",
+    contactNumber: "",
+    address: "",
+    username: "",
+    email: "",
+    password: "",
+    type: "viewer",
+    isActive: true,
+  });
+
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const validate = () => {
+    const {
+      firstName,
+      lastName,
+      age,
+      gender,
+      contactNumber,
+      address,
+      username,
+      email,
+      password,
+    } = formData;
+
+    if (
+      !firstName.trim() ||
+      !lastName.trim() ||
+      !age ||
+      !gender ||
+      !contactNumber.trim() ||
+      !address.trim() ||
+      !username.trim() ||
+      !email.trim() ||
+      !password.trim()
+    ) {
+      return "Please fill in all required fields.";
+    }
+
+    if (Number(age) <= 0 || Number(age) > 120) {
+      return "Please enter a valid age.";
+    }
+
+    if (contactNumber.length < 10) {
+      return "Please enter a valid contact number.";
+    }
+
+    return null;
+  };
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+
+    setError("");
+    setSuccess("");
+
+    const validationError = validate();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // CLEAN PAYLOAD (important for backend validation)
+      const payload = {
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        age: Number(formData.age),
+        gender: formData.gender,
+        contactNumber: formData.contactNumber.trim(),
+        address: formData.address.trim(),
+        username: formData.username.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+        type: "admin", // default to viewer, can be changed by admin later
+        isActive: true,
+      };
+
+      const { data } = await createUser(payload);
+
+      console.log("Account created:", data);
+
+      setSuccess("Account created successfully!");
+
+      setTimeout(() => {
+        navigate("/auth/signin");
+      }, 1200);
+    } catch (err) {
+      console.error("Signup failed:", err);
+
+      setError(
+        err.response?.data?.message ||
+          "Failed to create account. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-zinc-500">
@@ -18,86 +138,133 @@ const SignUpPage = () => {
         Create your digital design account.
       </h1>
 
-      <p className="mt-4 text-sm leading-7 text-zinc-600">
-        Save your purchases, download creative assets anytime, and build your
-        own library of templates, graphics, and brand materials.
-      </p>
+      {error && (
+        <div className="mt-4 rounded-xl border border-red-400 bg-red-100 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
 
-      <form className="mt-8 space-y-5">
+      {success && (
+        <div className="mt-4 rounded-xl border border-green-400 bg-green-100 px-4 py-3 text-sm text-green-700">
+          {success}
+        </div>
+      )}
+
+      <form onSubmit={handleSignUp} className="mt-8 space-y-5">
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label htmlFor="first-name" className="text-sm font-bold text-zinc-800">
+            <label className="text-sm font-bold text-zinc-800">
               First Name
             </label>
             <input
-              id="first-name"
-              type="text"
-              placeholder="First name"
-              autoComplete="given-name"
+              name="firstName"
               className={inputClasses}
+              value={formData.firstName}
+              onChange={handleChange}
+              required
             />
           </div>
 
           <div>
-            <label htmlFor="last-name" className="text-sm font-bold text-zinc-800">
-              Last Name
-            </label>
+            <label className="text-sm font-bold text-zinc-800">Last Name</label>
             <input
-              id="last-name"
-              type="text"
-              placeholder="Last name"
-              autoComplete="family-name"
+              name="lastName"
               className={inputClasses}
+              value={formData.lastName}
+              onChange={handleChange}
+              required
             />
           </div>
         </div>
 
-        <div>
-          <label htmlFor="signup-email" className="text-sm font-bold text-zinc-800">
-            Email Address
-          </label>
-          <input
-            id="signup-email"
-            type="email"
-            placeholder="you@example.com"
-            autoComplete="email"
-            className={inputClasses}
-          />
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label className="text-sm font-bold text-zinc-800">Age</label>
+            <input
+              name="age"
+              type="number"
+              className={inputClasses}
+              value={formData.age}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-bold text-zinc-800">Gender</label>
+            <select
+              name="gender"
+              className={inputClasses}
+              value={formData.gender}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
         </div>
 
-        <div>
-          <label htmlFor="signup-password" className="text-sm font-bold text-zinc-800">
-            Password
-          </label>
-          <input
-            id="signup-password"
-            type="password"
-            placeholder="Create a password"
-            autoComplete="new-password"
-            className={inputClasses}
-          />
-          <p className="mt-2 text-xs leading-5 text-zinc-500">
-            Use a strong password to keep your digital purchases and account
-            details protected.
-          </p>
-        </div>
+        <input
+          name="contactNumber"
+          placeholder="Contact Number"
+          className={inputClasses}
+          value={formData.contactNumber}
+          onChange={handleChange}
+          required
+        />
 
-        <Button type="submit" variant="secondary" className={actionButtonClassName}>
-          Create Account
+        <input
+          name="address"
+          placeholder="Address"
+          className={inputClasses}
+          value={formData.address}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          name="username"
+          placeholder="Username"
+          className={inputClasses}
+          value={formData.username}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          name="email"
+          type="email"
+          placeholder="Email"
+          className={inputClasses}
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          className={inputClasses}
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
+
+        <Button
+          type="submit"
+          variant="secondary"
+          className={actionButtonClassName}
+          disabled={loading}
+        >
+          {loading ? "Creating Account..." : "Create Account"}
         </Button>
 
-        <div className="grid gap-3 pt-2 sm:grid-cols-2">
-          <Button type="button" variant="tertiary" className={actionButtonClassName}>
-            Google
-          </Button>
-          <Button type="button" variant="tertiary" className={actionButtonClassName}>
-            Apple
-          </Button>
-        </div>
-
-        <p className="pt-2 text-center text-sm text-zinc-600">
+        <p className="text-center text-sm text-zinc-600">
           Already have an account?{" "}
-          <Link to="/auth/signin" className="font-bold text-zinc-900 underline underline-offset-4">
+          <Link to="/auth/signin" className="font-bold text-zinc-900 underline">
             Sign in
           </Link>
         </p>

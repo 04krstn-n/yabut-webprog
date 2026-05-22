@@ -6,7 +6,7 @@ const ArticleList = ({ articles }) => {
     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
       {articles.map((article, index) => (
         <article
-          key={article.name}
+          key={article.slug}
           className="overflow-hidden rounded-[1.75rem] border border-zinc-200 bg-white shadow-sm"
         >
           <img
@@ -25,10 +25,10 @@ const ArticleList = ({ articles }) => {
             </h3>
 
             <p className="mt-4 text-sm leading-7 text-zinc-600">
-              {article.description}
+              {article.preview}
             </p>
 
-            <Link to={`/articles/${article.name}`}>
+            <Link to={`/articles/${article.slug}`}>
               <Button className="mt-5">Read More</Button>
             </Link>
           </div>

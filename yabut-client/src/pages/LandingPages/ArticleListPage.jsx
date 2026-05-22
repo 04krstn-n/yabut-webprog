@@ -1,14 +1,47 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import Button from '../../components/Button.jsx';
 import ArticleList from '../../components/ArticleList.jsx';
-import articles from '../../assets/article-content.js';
+
+const getApiUrl = () => {
+  try {
+    const meta = Function("return import.meta")();
+    return meta?.env?.VITE_API_URL || "http://localhost:8000/api";
+  } catch {
+    return "http://localhost:8000/api";
+  }
+};
 
 const ArticleListPage = () => {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const visibleArticles = articles.filter(
+    (article) => (article.status || "enabled") === "enabled"
+  );
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        setLoading(true);
+        const { data } = await axios.get(`${getApiUrl()}/articles`);
+        setArticles(data.articles || []);
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+        setArticles([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
   return (
     <div className="flex w-full flex-col bg-zinc-50 text-zinc-900">
       <section className="border-b border-zinc-200 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.28em] text-zinc-500">
-            Articles
+            Featured Reading
           </p>
 
           <h1 className="max-w-5xl text-4xl font-bold leading-[0.95] sm:text-5xl lg:text-7xl">
@@ -35,7 +68,7 @@ const ArticleListPage = () => {
         <div className="mx-auto max-w-7xl">
           <div className="mb-10 max-w-3xl">
             <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-zinc-400">
-              Featured Reading
+              Articles
             </p>
 
             <h2 className="mt-3 text-3xl font-bold leading-tight text-white sm:text-4xl">
@@ -43,7 +76,17 @@ const ArticleListPage = () => {
             </h2>
           </div>
 
-          <ArticleList articles={articles} />
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <p className="text-white">Loading articles...</p>
+            </div>
+          ) : visibleArticles.length === 0 ? (
+            <div className="flex items-center justify-center py-12">
+              <p className="text-white">No articles available</p>
+            </div>
+          ) : (
+            <ArticleList articles={visibleArticles} />
+          )}
         </div>
       </section>
 

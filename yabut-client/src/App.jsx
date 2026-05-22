@@ -9,6 +9,7 @@ import ArticleListPage from './pages/LandingPages/ArticleListPage';
 import DashboardPage from "./pages/DashboardPages/DashboardPage";
 import ReportsPage from "./pages/DashboardPages/ReportsPage";
 import UsersPage from "./pages/DashboardPages/UsersPage";
+import DashArticleListPage from "./pages/DashboardPages/DashArticleListPage";
 import DashLayout from "./layouts/DashLayout";
 
 
@@ -17,6 +18,17 @@ import SignInPage from './pages/AuthPages/SignInPage';
 import SignUpPage from './pages/AuthPages/SignUpPage';
 
 import NotFoundPage from './pages/NotFoundPage';
+import { Navigate } from 'react-router-dom';
+
+const DashboardRoleGate = ({ allowedTypes, children }) => {
+  const userType = localStorage.getItem('type');
+
+  if (!allowedTypes.includes(userType)) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+};
 
 const routes = [
   {
@@ -37,7 +49,7 @@ const routes = [
         element: <ArticleListPage />,
       },
       {
-        path: 'articles/:name',
+        path: 'articles/:slug',
         element: <ArticlePage />,
       },
     ],
@@ -72,7 +84,15 @@ const routes = [
       },
       {
         path: "users",
-        element: <UsersPage />,
+        element: (
+          <DashboardRoleGate allowedTypes={['admin']}>
+            <UsersPage />
+          </DashboardRoleGate>
+        ),
+      },
+      {
+        path: "articles",
+        element: <DashArticleListPage />,
       },
     ],
   },

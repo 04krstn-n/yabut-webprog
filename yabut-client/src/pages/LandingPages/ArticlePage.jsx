@@ -1,10 +1,80 @@
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import Button from '../../components/Button.jsx';
-import articles from '../../assets/article-content.js';
+
+const getApiUrl = () => {
+  try {
+    const meta = Function("return import.meta")();
+    return meta?.env?.VITE_API_URL || "http://localhost:8000/api";
+  } catch {
+    return "http://localhost:8000/api";
+  }
+};
 
 function ArticlePage() {
-  const { name } = useParams();
-  const article = articles.find((article) => article.name === name);
+  const { slug } = useParams();
+  const [article, setArticle] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchArticle = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const { data } = await axios.get(`${getApiUrl()}/articles`);
+        const articles = data.articles || [];
+        console.log("Fetched articles:", articles);
+        console.log("Looking for slug:", slug);
+        const foundArticle = articles.find((a) => a.slug === slug);
+        setArticle(foundArticle || null);
+      } catch (err) {
+        console.error("Error fetching article:", err);
+        setError(err.message);
+        setArticle(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticle();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center bg-zinc-900 px-4 py-16 sm:px-6 lg:px-8">
+        <div className="text-white">Loading article...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center bg-zinc-900 px-4 py-16 sm:px-6 lg:px-8">
+        <div className="w-full max-w-2xl rounded-[2rem] border border-zinc-700 bg-zinc-800 p-10 text-center shadow-sm">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-zinc-400">
+            API Error
+          </p>
+          <h1 className="mt-4 text-4xl font-bold text-white sm:text-5xl">
+            Failed to Load Article
+          </h1>
+          <p className="mt-4 text-base leading-7 text-zinc-400">
+            {error}
+          </p>
+          <p className="mt-4 text-sm text-zinc-500">
+            Make sure the server is running at {getApiUrl()}
+          </p>
+          <div className="mt-8 flex justify-center gap-3">
+            <Button to="/articles" variant="primary">
+              Browse Articles
+            </Button>
+            <Button to="/">Back Home</Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!article) {
     return (
@@ -52,7 +122,7 @@ function ArticlePage() {
           </h1>
 
           <p className="mt-4 max-w-2xl text-base leading-8 text-zinc-600">
-            {article.description}
+            {article.preview}
           </p>
         </div>
       </section>
@@ -72,7 +142,7 @@ function ArticlePage() {
       <section className="border-t border-zinc-200 px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
         <div className="mx-auto max-w-3xl">
           <div className="space-y-6">
-            {article.content.map((paragraph, index) => (
+            {article.paragraphs.map((paragraph, index) => (
               <p
                 key={index}
                 className="text-base leading-8 text-zinc-700 whitespace-pre-wrap"

@@ -21,6 +21,7 @@ import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import AssessmentIcon from "@mui/icons-material/Assessment";
+import ArticleIcon from "@mui/icons-material/Article";
 import Button from "@mui/material/Button";
 
 const drawerWidth = 240;
@@ -30,6 +31,7 @@ const dashboardNavItems = [
   { label: "Dashboard", title: "Dashboard", to: "/dashboard", icon: DashboardIcon },
   { label: "Reports", title: "Reports", to: "/dashboard/reports", icon: AssessmentIcon },
   { label: "Users", title: "Users", to: "/dashboard/users", icon: PeopleIcon },
+  { label: "Articles", title: "Articles", to: "/dashboard/articles", icon: ArticleIcon },
 ];
 
 const getPageTitle = (pathname) =>
@@ -108,7 +110,12 @@ function DashLayout() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const pageTitle = getPageTitle(location.pathname);
+  const firstName = localStorage.getItem("firstName") || "User";
+  const userType = localStorage.getItem("type") || "viewer";
+
+  const visibleNavItems = dashboardNavItems.filter(
+    (item) => item.to !== "/dashboard/users" || userType === "admin"
+  );
 
   const handleDrawerToggle = () => setOpen((prev) => !prev);
   const handleLogout = () => navigate("/");
@@ -119,27 +126,12 @@ function DashLayout() {
 
       <AppBar position="fixed" open={open}>
         <Toolbar sx={{ minHeight: "72px !important", px: 3 }}>
-          <IconButton
-            onClick={handleDrawerToggle}
-            sx={{
-              mr: 2,
-              color: "#f8fafc",
-              bgcolor: "rgba(255,255,255,0.08)",
-              borderRadius: "12px",
-              "&:hover": {
-                bgcolor: "rgba(255,255,255,0.16)",
-              },
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-
           <Typography
             variant="h6"
             noWrap
             sx={{ flexGrow: 1, fontWeight: 900 }}
           >
-            {pageTitle}
+            Welcome, {firstName}
           </Typography>
 
           <Search>
@@ -205,7 +197,7 @@ function DashLayout() {
         <Divider sx={{ borderColor: "rgba(255,255,255,0.08)" }} />
 
         <List sx={{ px: 1.2, py: 2 }}>
-          {dashboardNavItems.map((item) => {
+          {visibleNavItems.map((item) => {
             const IconComponent = item.icon;
             const isActive = location.pathname === item.to;
 
