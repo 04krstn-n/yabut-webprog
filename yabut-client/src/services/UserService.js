@@ -1,6 +1,7 @@
 import axios from 'axios';
 import constants from '../constants';
 
+const API_URL = 'http://localhost:8000/api/auth';
 // API Access to Front-end JSON data transformation or decoder
 const API = axios.create({
     baseURL: `${constants.HOST}/users`,
@@ -9,8 +10,9 @@ const API = axios.create({
 // Fetch users
 export const fetchUsers = (user) => API.get('/', user);
 
-// Create user
-export const createUser = (user) => API.post('/', user);
+export const createUser = (userData) => {
+  return axios.post(`${API_URL}/signup`, userData);
+};
 
 // Update user
 export const updateUser = (id, user) => API.put(`/${id}`, user);

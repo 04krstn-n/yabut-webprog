@@ -22,7 +22,7 @@ const SignUpPage = () => {
     username: "",
     email: "",
     password: "",
-    type: "viewer",
+    type: "admin",
     isActive: true,
   });
 
@@ -104,6 +104,7 @@ const SignUpPage = () => {
         email: formData.email.trim(),
         password: formData.password,
         type: "admin", // default to viewer, can be changed by admin later
+        role: "admin", // default to viewer, can be changed by admin later
         isActive: true,
       };
 

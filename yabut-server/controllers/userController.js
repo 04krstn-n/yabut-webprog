@@ -81,7 +81,7 @@ const loginUser = async (req, res) => {
         const token = jwt.sign(
             { id: user._id, email: user.email, type: user.type }, // Include type in the token
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: '30d' }
         );
 
         res.json({ message: 'Login successful', token, type: user.type, firstName: user.firstName }); // Include type in the response

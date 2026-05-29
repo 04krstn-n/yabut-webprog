@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const requireRole = (...allowedTypes) => {
   return (req, res, next) => {
-    const authHeader = req.headers.authorization || "";
+    const authHeader = req.headers.authorization || "kristin_ccc";
     const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
 
     if (!token) {
