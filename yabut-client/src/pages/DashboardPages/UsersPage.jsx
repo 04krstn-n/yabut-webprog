@@ -66,6 +66,9 @@ const UsersPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState("all");
+  const [filterGender, setFilterGender] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("all");
   const [searchFieldName] = useState(() => `users-search-${Math.random().toString(36).slice(2,10)}`);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -184,11 +187,19 @@ const UsersPage = () => {
       `${user.firstName || ""} ${user.lastName || ""}`.toLowerCase();
     const q = searchQuery.toLowerCase();
 
-    return (
+    const matchesSearch =
       fullName.includes(q) ||
       (user.email || "").toLowerCase().includes(q) ||
-      (user.username || "").toLowerCase().includes(q)
-    );
+      (user.username || "").toLowerCase().includes(q);
+
+    const matchesType = filterType === "all" || user.type === filterType;
+    const matchesGender = filterGender === "all" || user.gender === filterGender;
+    
+    // Check if user is active; if active is not explicitly false, considering it true
+    const isActive = user.isActive !== false;
+    const matchesStatus = filterStatus === "all" || (filterStatus === "active" ? isActive : !isActive);
+
+    return matchesSearch && matchesType && matchesGender && matchesStatus;
   });
 
   const paginatedUsers = filteredUsers.slice(
@@ -219,39 +230,87 @@ const UsersPage = () => {
         </Button>
       </Stack>
 
-      <Box sx={{ mb: 3, position: 'relative' }}>
-        <SearchIcon sx={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'text.secondary', pointerEvents: 'none' }} />
-        <TextField
-          fullWidth
-          variant="outlined"
-          type="text"
-          placeholder="Search users by name, email, or username..."
-          value={searchQuery}
-          name={searchFieldName}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            setPage(0);
-          }}
-          autoComplete="new-password"
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: '#ffffff',
-              borderRadius: 1,
-            },
-            "& .MuiInputBase-input": {
-              pl: 6,
-              color: '#000000',
-            },
-          }}
-          slotProps={{
-            htmlInput: {
-              autoComplete: "new-password",
-              autoCorrect: "off",
-              autoCapitalize: "off",
-              spellCheck: false,
-            },
-          }}
-        />
+      <Box sx={{ mb: 3, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+        <Box sx={{ position: 'relative', flex: 1, minWidth: '300px' }}>
+          <SearchIcon sx={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'text.secondary', pointerEvents: 'none' }} />
+          <TextField
+            fullWidth
+            variant="outlined"
+            type="text"
+            placeholder="Search users by name, email..."
+            value={searchQuery}
+            name={searchFieldName}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setPage(0);
+            }}
+            autoComplete="new-password"
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: '#ffffff',
+                borderRadius: 1,
+              },
+              "& .MuiInputBase-input": {
+                pl: 6,
+                color: '#000000',
+              },
+            }}
+            slotProps={{
+              htmlInput: {
+                autoComplete: "new-password",
+                autoCorrect: "off",
+                autoCapitalize: "off",
+                spellCheck: false,
+              },
+            }}
+          />
+        </Box>
+        <FormControl sx={{ minWidth: 150, backgroundColor: '#ffffff', borderRadius: 1 }}>
+          <Select
+            value={filterType}
+            onChange={(e) => {
+              setFilterType(e.target.value);
+              setPage(0);
+            }}
+            displayEmpty
+            sx={{ color: '#000000' }}
+          >
+            <MenuItem value="all">All Types</MenuItem>
+            <MenuItem value="admin">Admin</MenuItem>
+            <MenuItem value="editor">Editor</MenuItem>
+            <MenuItem value="viewer">Viewer</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl sx={{ minWidth: 150, backgroundColor: '#ffffff', borderRadius: 1 }}>
+          <Select
+            value={filterGender}
+            onChange={(e) => {
+              setFilterGender(e.target.value);
+              setPage(0);
+            }}
+            displayEmpty
+            sx={{ color: '#000000' }}
+          >
+            <MenuItem value="all">All Genders</MenuItem>
+            <MenuItem value="Male">Male</MenuItem>
+            <MenuItem value="Female">Female</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl sx={{ minWidth: 150, backgroundColor: '#ffffff', borderRadius: 1 }}>
+          <Select
+            value={filterStatus}
+            onChange={(e) => {
+              setFilterStatus(e.target.value);
+              setPage(0);
+            }}
+            displayEmpty
+            sx={{ color: '#000000' }}
+          >
+            <MenuItem value="all">All Statuses</MenuItem>
+            <MenuItem value="active">Active</MenuItem>
+            <MenuItem value="disabled">Disabled</MenuItem>
+          </Select>
+        </FormControl>
       </Box>
 
       <TableContainer component={Paper} sx={{ mb: 5, boxShadow: 3, borderRadius: 2 }}>

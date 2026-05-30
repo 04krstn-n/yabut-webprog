@@ -11,7 +11,7 @@ const API = axios.create({
 export const fetchUsers = (user) => API.get('/', user);
 
 export const createUser = (userData) => {
-  return axios.post(`${API_URL}/signup`, userData);
+  return API.post(`/signup`, userData);
 };
 
 // Update user

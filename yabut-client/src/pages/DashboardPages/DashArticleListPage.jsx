@@ -17,6 +17,9 @@ import {
   TableHead,
   TableRow,
   TablePagination,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -56,6 +59,7 @@ const DashArticleListPage = () => {
   const [error, setError] = useState("");
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -198,14 +202,17 @@ const DashArticleListPage = () => {
   const filteredArticles = articles.filter((a) => {
     const q = searchQuery.toLowerCase();
     const paragraphCount = Array.isArray(a.paragraphs) ? a.paragraphs.length : a.paragraphs;
-    return (
-      String(a.id || "").toLowerCase().includes(q) ||
+    
+    const matchesSearch = String(a.id || "").toLowerCase().includes(q) ||
       (a.title || "").toLowerCase().includes(q) ||
       (a.slug || "").toLowerCase().includes(q) ||
       (a.preview || "").toLowerCase().includes(q) ||
       String(paragraphCount || "").toLowerCase().includes(q) ||
-      (a.status || "").toLowerCase().includes(q)
-    );
+      (a.status || "").toLowerCase().includes(q);
+      
+    const matchesFilter = filterStatus === "all" || a.status === filterStatus;
+    
+    return matchesSearch && matchesFilter;
   });
 
   const paginated = filteredArticles.slice(
@@ -236,25 +243,45 @@ const DashArticleListPage = () => {
         </Button>
       </Stack>
 
-      {/* SEARCH */}
-      <Box sx={{ mb: 3, position: "relative" }}>
-        <SearchIcon sx={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'text.secondary', pointerEvents: 'none' }} />
-        <TextField
-          fullWidth
-          placeholder="Search articles..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: '#ffffff',
-              borderRadius: 1,
-            },
-            "& .MuiInputBase-input": {
-              pl: 6,
-              color: '#000000',
-            },
-          }}
-        />
+      {/* SEARCH AND FILTER */}
+      <Box sx={{ mb: 3, display: 'flex', gap: 2 }}>
+        <Box sx={{ position: "relative", flex: 1 }}>
+          <SearchIcon sx={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'text.secondary', pointerEvents: 'none' }} />
+          <TextField
+            fullWidth
+            placeholder="Search articles..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setPage(0);
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: '#ffffff',
+                borderRadius: 1,
+              },
+              "& .MuiInputBase-input": {
+                pl: 6,
+                color: '#000000',
+              },
+            }}
+          />
+        </Box>
+        <FormControl sx={{ minWidth: 200, backgroundColor: '#ffffff', borderRadius: 1 }}>
+          <Select
+            value={filterStatus}
+            onChange={(e) => {
+              setFilterStatus(e.target.value);
+              setPage(0);
+            }}
+            displayEmpty
+            sx={{ color: '#000000' }}
+          >
+            <MenuItem value="all">All Statuses</MenuItem>
+            <MenuItem value="enabled">Enabled</MenuItem>
+            <MenuItem value="disabled">Disabled</MenuItem>
+          </Select>
+        </FormControl>
       </Box>
 
       {error ? (
