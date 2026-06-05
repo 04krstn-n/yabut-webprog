@@ -34,6 +34,7 @@ const dashboardNavItems = [
   { label: "Articles", title: "Articles", to: "/dashboard/articles", icon: ArticleIcon },
 ];
 
+// eslint-disable-next-line no-unused-vars
 const getPageTitle = (pathname) =>
   dashboardNavItems.find((item) => item.to === pathname)?.title ?? "Dashboard";
 
