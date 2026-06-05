@@ -12,6 +12,7 @@ connectDB();
 const corsOptions = {
   origin: [
     "https://yabut-client.vercel.app",
+    "https://yabut-server.vercel.app",
     "http://localhost:5173",
     "http://localhost:3000",
   ],
