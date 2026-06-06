@@ -1,5 +1,4 @@
 const express = require("express");
-// import functions
 const {
   getUsers,
   createUser,
@@ -11,6 +10,11 @@ const requireRole = require("../middleware/requireRole");
 
 const router = express.Router();
 
+// PUBLIC routes (no auth required)
+router.post("/signup", createUser);
+router.post("/login", loginUser);
+
+// ADMIN-only routes
 router
   .route("/")
   .get(requireRole("admin"), getUsers)
@@ -20,7 +24,5 @@ router
   .route("/:id")
   .put(requireRole("admin"), updateUser)
   .delete(requireRole("admin"), deleteUser);
-
-router.post("/login", loginUser);
 
 module.exports = router;

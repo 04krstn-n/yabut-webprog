@@ -1,18 +1,16 @@
 import axios from 'axios';
 import constants from '../constants';
 
-const API_URL = 'https://yabut-server.vercel.app/api/auth';
-// API Access to Front-end JSON data transformation or decoder
 const API = axios.create({
-    baseURL: `${constants.HOST}/users`,
+  baseURL: `${constants.HOST}/api/users`,
+  withCredentials: true,
 });
 
-// Fetch users
+// Fetch users (admin only)
 export const fetchUsers = (user) => API.get('/', user);
 
-export const createUser = (userData) => {
-  return API.post(`/signup`, userData);
-};
+// Public signup
+export const createUser = (userData) => API.post('/signup', userData);
 
 // Update user
 export const updateUser = (id, user) => API.put(`/${id}`, user);
