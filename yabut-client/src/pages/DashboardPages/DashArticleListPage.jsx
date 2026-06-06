@@ -30,7 +30,7 @@ import {
   addArticle,
   updateArticle,
   deleteArticle,
-} from "../services/ArticleService";
+} from "../../services/ArticleService";
 
 const modalStyle = {
   position: "absolute",

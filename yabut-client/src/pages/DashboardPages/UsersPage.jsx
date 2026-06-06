@@ -29,7 +29,7 @@ import {
   fetchUsers,
   addUser,
   updateUser,
-} from "../services/userService";
+} from "../../services/UserService";
 
 const modalStyle = {
   position: "absolute",
