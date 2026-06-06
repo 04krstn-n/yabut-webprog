@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
+const articleRoutes = require("./routes/articleRoutes");
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/users", userRoutes);
+app.use("/api/articles", articleRoutes);
 
 app.use((err, req, res, next) => {
   console.error("SERVER ERROR:", err);
