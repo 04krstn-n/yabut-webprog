@@ -1,5 +1,5 @@
-import axios from 'axios';
-import constants from '../constants';
+import axios from "axios";
+import constants from "../constants";
 
 const API = axios.create({
   baseURL: `${constants.HOST}/api/users`,
@@ -7,16 +7,44 @@ const API = axios.create({
 });
 
 // Fetch users (admin only)
-export const fetchUsers = (user) => API.get('/', user);
+export const fetchUsers = (config) =>
+  API.get("/", config);
+
+// Admin create user
+export const addUser = (
+  userData,
+  config
+) => API.post("/", userData, config);
 
 // Public signup
-export const createUser = (userData) => API.post('/signup', userData);
+export const createUser = (
+  userData
+) => API.post("/signup", userData);
 
 // Update user
-export const updateUser = (id, user) => API.put(`/${id}`, user);
+export const updateUser = (
+  id,
+  user,
+  config
+) => API.put(
+  `/${id}`,
+  user,
+  config
+);
 
 // Delete user
-export const deleteUser = (id) => API.delete(`/${id}`);
+export const deleteUser = (
+  id,
+  config
+) => API.delete(
+  `/${id}`,
+  config
+);
 
 // Login user
-export const loginUser = (credentials) => API.post('/login', credentials);
+export const loginUser = (
+  credentials
+) => API.post(
+  "/login",
+  credentials
+);

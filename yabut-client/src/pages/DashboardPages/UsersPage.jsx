@@ -25,7 +25,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import axios from "axios";
+import {
+  fetchUsers,
+  addUser,
+  updateUser,
+} from "../services/userService";
 
 const modalStyle = {
   position: "absolute",
@@ -41,14 +45,6 @@ const modalStyle = {
   p: 4,
 };
 
-const getApiUrl = () => {
-  try {
-    const meta = Function("return import.meta")();
-    return meta?.env?.VITE_API_URL || "https://yabut-server.vercel.app/api";
-  } catch {
-    return "https://yabut-server.vercel.app/api";
-  }
-};
 
 // ANTI-AUTOFILL CONFIG (IMPORTANT FIX)
 const disableAutoFill = {
@@ -93,19 +89,18 @@ const UsersPage = () => {
   };
 
   const loadUsers = useCallback(async () => {
-    try {
-      setLoading(true);
-      const { data } = await axios.get(
-        `${getApiUrl()}/users`,
-        getHeaders()
-      );
-      setUsers(data.users || []);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  try {
+    setLoading(true);
+
+    const { data } = await fetchUsers(getHeaders());
+
+    setUsers(data.users || data || []);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  } finally {
+    setLoading(false);
+  }
+}, []);
 
   useEffect(() => {
     loadUsers();
@@ -146,35 +141,52 @@ const UsersPage = () => {
   };
 
   const handleToggleActive = async (id, isActive) => {
-    try {
-      await axios.put(`${getApiUrl()}/users/${id}`, { isActive: !isActive }, getHeaders());
-      loadUsers();
-    } catch (error) {
-      console.error('Error toggling user status:', error);
-    }
-  };
+  try {
+    await updateUser(
+      id,
+      { isActive: !isActive },
+      getHeaders()
+    );
+
+    loadUsers();
+  } catch (error) {
+    console.error(
+      "Error toggling user status:",
+      error
+    );
+  }
+};
 
   const handleSaveUser = async () => {
-    try {
-      if (isEditing) {
-        const updatedUser = { ...newUser };
-        if (!updatedUser.password) delete updatedUser.password;
+  try {
+    if (isEditing) {
+      const updatedUser = { ...newUser };
 
-        await axios.put(
-          `${getApiUrl()}/users/${editUserId}`,
-          updatedUser,
-          getHeaders()
-        );
-      } else {
-        await axios.post(`${getApiUrl()}/users`, newUser, getHeaders());
+      if (!updatedUser.password) {
+        delete updatedUser.password;
       }
 
-      loadUsers();
-      handleClose();
-    } catch (error) {
-      console.error("Error saving user:", error);
+      await updateUser(
+        editUserId,
+        updatedUser,
+        getHeaders()
+      );
+    } else {
+      await addUser(
+        newUser,
+        getHeaders()
+      );
     }
-  };
+
+    await loadUsers();
+    handleClose();
+  } catch (error) {
+    console.error(
+      "Error saving user:",
+      error.response?.data || error
+    );
+  }
+};
 
   const handleChangePage = (_, newPage) => setPage(newPage);
   const handleChangeRowsPerPage = (e) => {
