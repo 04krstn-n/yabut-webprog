@@ -1,7 +1,7 @@
 import axios from 'axios';
 import constants from '../constants';
 
-const API_URL = 'http://localhost:8000/api/auth';
+const API_URL = 'https://yabut-server.vercel.app/api/auth';
 // API Access to Front-end JSON data transformation or decoder
 const API = axios.create({
     baseURL: `${constants.HOST}/users`,
