@@ -1,0 +1,85 @@
+[{
+  "_id": {
+    "$oid": "6a0c0e4520fce5641ab9307d"
+  },
+  "firstName": "Kierstein Chelsea",
+  "lastName": "Yabut",
+  "age": "20",
+  "gender": "Female",
+  "contactNumber": "09293929945",
+  "email": "04krstn.n@webprog.dev",
+  "type": "admin",
+  "username": "04krstn",
+  "password": "$2b$10$zUEgdkE924Xlrnm5VctCyOA3hJ.4zLHZ6iI0SRbzBLFJzSvB8rl22",
+  "address": "Cainta, Rizal",
+  "isActive": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a0c2c9f20fce5641ab9307e"
+  },
+  "firstName": "AJ",
+  "lastName": "Fernandez",
+  "age": "23",
+  "gender": "Female",
+  "contactNumber": "09683285690",
+  "email": "fernandezaj@webprog.dev",
+  "type": "admin",
+  "username": "ajane.e",
+  "password": "$2b$10$DyVDivXzFuor7bfXkkskRe1srnWCYVTEypT7ilkPHyAqj3vbcjZz.",
+  "address": "San Juan, Cainta",
+  "isActive": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a0c8d000b51a595ba0fead8"
+  },
+  "firstName": "Zhyxy",
+  "lastName": "Tamargo",
+  "age": "18",
+  "gender": "Female",
+  "contactNumber": "09284736498",
+  "email": "tamargozy@webprog.dev",
+  "type": "admin",
+  "username": "zeexee",
+  "password": "$2b$10$UiZhXdFjlFFgaS6vmKcr0OiPVHsXiqmTFDvPZuQJXeMNxTt0q0dhy",
+  "address": "Cainta, Rizal",
+  "isActive": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1a4a845ae61949e048b7ac"
+  },
+  "firstName": "Kierstein",
+  "lastName": "Yabut",
+  "age": "21",
+  "gender": "Female",
+  "contactNumber": "092983746215",
+  "email": "yck100405@gmail.com",
+  "type": "editor",
+  "username": "04krstn_n",
+  "password": "$2b$10$HD72GqTWmbh08CGbHO/dZedLc7M0TGalQ.LTOFsyhlZMrZLFG5zxi",
+  "address": "MF Jhocson, Sampaloc, Manila ",
+  "isActive": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1a4bb867ef2f0c7e77770b"
+  },
+  "firstName": "Cyrus RJ",
+  "lastName": "Robles",
+  "age": "21",
+  "gender": "Male",
+  "contactNumber": "09293929945",
+  "email": "21cyrus@webprog.dev",
+  "type": "editor",
+  "username": "cyrus.s",
+  "password": "$2b$10$tar.IQ94BTflPZkPU408BuHV2szY4ANf8Pt7D8YBql2cHvbgcETXe",
+  "address": "MF Jhocson, Sampaloc, Manila",
+  "isActive": true,
+  "__v": 0
+}]

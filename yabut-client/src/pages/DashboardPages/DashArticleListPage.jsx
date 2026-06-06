@@ -30,9 +30,9 @@ import axios from "axios";
 const getApiUrl = () => {
   try {
     const meta = Function("return import.meta")();
-    return meta?.env?.VITE_API_URL || "http://localhost:8000/api";
+    return meta?.env?.VITE_API_URL || "https://yabut-server.vercel.app/api";
   } catch {
-    return "http://localhost:8000/api";
+    return "https://yabut-server.vercel.app/api";
   }
 };
 
