@@ -25,16 +25,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import axios from "axios";
-
-const getApiUrl = () => {
-  try {
-    const meta = Function("return import.meta")();
-    return meta?.env?.VITE_API_URL || "https://yabut-server.vercel.app/api";
-  } catch {
-    return "https://yabut-server.vercel.app/api";
-  }
-};
+import {
+  fetchArticles,
+  addArticle,
+  updateArticle,
+  deleteArticle,
+} from "../services/articleService";
 
 const modalStyle = {
   position: "absolute",
@@ -78,19 +74,33 @@ const DashArticleListPage = () => {
     return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
   };
 
-  const loadArticles = useCallback(async () => {
+  const loadArticles =
+  useCallback(async () => {
     try {
       setLoading(true);
       setError("");
 
-      const { data } = await axios.get(
-        `${getApiUrl()}/articles?includeDisabled=true`,
-        getHeaders()
+      const { data } =
+        await fetchArticles(
+          getHeaders()
+        );
+
+      setArticles(
+        data.articles ||
+          data ||
+          []
       );
-      setArticles(data.articles || []);
-    } catch (requestError) {
-      console.error("Error fetching articles:", requestError);
-      setError("Unable to load articles from the database.");
+    } catch (
+      requestError
+    ) {
+      console.error(
+        "Error fetching articles:",
+        requestError
+      );
+
+      setError(
+        "Unable to load articles from the database."
+      );
     } finally {
       setLoading(false);
     }
@@ -151,51 +161,105 @@ const DashArticleListPage = () => {
   };
 
   const handleSave = async () => {
-    try {
-      const payload = {
-        ...newArticle,
-        id: newArticle.id === "" ? undefined : Number(newArticle.id),
-        paragraphs: Array.isArray(newArticle.paragraphs)
+  try {
+    const payload = {
+      ...newArticle,
+      id:
+        newArticle.id === ""
+          ? undefined
+          : Number(
+              newArticle.id
+            ),
+      paragraphs:
+        Array.isArray(
+          newArticle.paragraphs
+        )
           ? newArticle.paragraphs
-          : normalizeParagraphInput(String(newArticle.paragraphs || "")),
-      };
+          : normalizeParagraphInput(
+              String(
+                newArticle.paragraphs ||
+                  ""
+              )
+            ),
+    };
 
-      if (isEditing && editingArticleId) {
-        await axios.put(`${getApiUrl()}/articles/${editingArticleId}`, payload, 
-        getHeaders());
-      } else {
-        await axios.post(`${getApiUrl()}/articles`, payload, getHeaders());
-      }
-
-      await loadArticles();
-      handleClose();
-    } catch (saveError) {
-      console.error("Error saving article:", saveError);
+    if (
+      isEditing &&
+      editingArticleId
+    ) {
+      await updateArticle(
+        editingArticleId,
+        payload,
+        getHeaders()
+      );
+    } else {
+      await addArticle(
+        payload,
+        getHeaders()
+      );
     }
-  };
 
-  const handleToggleStatus = async (article) => {
+    await loadArticles();
+    handleClose();
+  } catch (
+    saveError
+  ) {
+    console.error(
+      "Error saving article:",
+      saveError.response
+        ?.data ||
+        saveError
+    );
+  }
+};
+
+  const handleToggleStatus =
+  async (article) => {
     try {
-      const nextStatus = article.status === "enabled" ? "disabled" : "enabled";
+      const nextStatus =
+        article.status ===
+        "enabled"
+          ? "disabled"
+          : "enabled";
 
-      await axios.put(
-        `${getApiUrl()}/articles/${article._id}`,
-        { status: nextStatus },
+      await updateArticle(
+        article._id,
+        {
+          status:
+            nextStatus,
+        },
         getHeaders()
       );
 
       await loadArticles();
-    } catch (toggleError) {
-      console.error("Error updating article status:", toggleError);
+    } catch (
+      toggleError
+    ) {
+      console.error(
+        "Error updating article status:",
+        toggleError
+      );
     }
   };
 
-  const handleDelete = async (articleId) => {
+  const handleDelete =
+  async (
+    articleId
+  ) => {
     try {
-      await axios.delete(`${getApiUrl()}/articles/${articleId}`, getHeaders());
+      await deleteArticle(
+        articleId,
+        getHeaders()
+      );
+
       await loadArticles();
-    } catch (deleteError) {
-      console.error("Error deleting article:", deleteError);
+    } catch (
+      deleteError
+    ) {
+      console.error(
+        "Error deleting article:",
+        deleteError
+      );
     }
   };
 

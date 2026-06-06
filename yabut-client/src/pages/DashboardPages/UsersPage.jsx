@@ -29,7 +29,7 @@ import {
   fetchUsers,
   addUser,
   updateUser,
-} from "../../services/UserService";
+} from "../services/userService";
 
 const modalStyle = {
   position: "absolute",
@@ -44,7 +44,6 @@ const modalStyle = {
   boxShadow: 24,
   p: 4,
 };
-
 
 // ANTI-AUTOFILL CONFIG (IMPORTANT FIX)
 const disableAutoFill = {
@@ -92,11 +91,18 @@ const UsersPage = () => {
   try {
     setLoading(true);
 
-    const { data } = await fetchUsers(getHeaders());
+    const { data } = await fetchUsers(
+      getHeaders()
+    );
 
-    setUsers(data.users || data || []);
+    setUsers(
+      data.users || data || []
+    );
   } catch (error) {
-    console.error("Error fetching users:", error);
+    console.error(
+      "Error fetching users:",
+      error
+    );
   } finally {
     setLoading(false);
   }
@@ -140,7 +146,10 @@ const UsersPage = () => {
     }
   };
 
-  const handleToggleActive = async (id, isActive) => {
+  const handleToggleActive = async (
+  id,
+  isActive
+) => {
   try {
     await updateUser(
       id,
@@ -151,7 +160,7 @@ const UsersPage = () => {
     loadUsers();
   } catch (error) {
     console.error(
-      "Error toggling user status:",
+      "Error toggling user:",
       error
     );
   }
@@ -160,7 +169,9 @@ const UsersPage = () => {
   const handleSaveUser = async () => {
   try {
     if (isEditing) {
-      const updatedUser = { ...newUser };
+      const updatedUser = {
+        ...newUser,
+      };
 
       if (!updatedUser.password) {
         delete updatedUser.password;
@@ -183,7 +194,8 @@ const UsersPage = () => {
   } catch (error) {
     console.error(
       "Error saving user:",
-      error.response?.data || error
+      error.response?.data ||
+        error
     );
   }
 };
