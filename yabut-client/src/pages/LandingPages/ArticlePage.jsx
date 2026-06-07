@@ -1,44 +1,51 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import Button from '../../components/Button.jsx';
+import { useEffect, useState } from "react";
 
-const getApiUrl = () => {
-  try {
-    const meta = Function("return import.meta")();
-    return meta?.env?.VITE_API_URL || "http://localhost:8000/api";
-  } catch {
-    return "http://localhost:8000/api";
-  }
-};
+import { useParams } from "react-router-dom";
+
+import Button from "../../components/Button.jsx";
+
+import { fetchArticles } from "../../services/articleService";
 
 function ArticlePage() {
   const { slug } = useParams();
+
   const [article, setArticle] = useState(null);
+
   const [loading, setLoading] = useState(true);
+
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchArticle = async () => {
+    const loadArticle = async () => {
       try {
         setLoading(true);
         setError(null);
-        const { data } = await axios.get(`${getApiUrl()}/articles`);
-        const articles = data.articles || [];
+
+        const { data } = await fetchArticles();
+
+        const articles = data.articles || data || [];
+
         console.log("Fetched articles:", articles);
+
         console.log("Looking for slug:", slug);
-        const foundArticle = articles.find((a) => a.slug === slug);
+
+        const foundArticle = articles.find(
+          (a) => a.slug === slug && (a.status || "enabled") === "enabled",
+        );
+
         setArticle(foundArticle || null);
       } catch (err) {
         console.error("Error fetching article:", err);
+
         setError(err.message);
+
         setArticle(null);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchArticle();
+    loadArticle();
   }, [slug]);
 
   if (loading) {
@@ -56,19 +63,18 @@ function ArticlePage() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-zinc-400">
             API Error
           </p>
+
           <h1 className="mt-4 text-4xl font-bold text-white sm:text-5xl">
             Failed to Load Article
           </h1>
-          <p className="mt-4 text-base leading-7 text-zinc-400">
-            {error}
-          </p>
-          <p className="mt-4 text-sm text-zinc-500">
-            Make sure the server is running at {getApiUrl()}
-          </p>
+
+          <p className="mt-4 text-base leading-7 text-zinc-400">{error}</p>
+
           <div className="mt-8 flex justify-center gap-3">
             <Button to="/articles" variant="primary">
               Browse Articles
             </Button>
+
             <Button to="/">Back Home</Button>
           </div>
         </div>
@@ -89,8 +95,8 @@ function ArticlePage() {
           </h1>
 
           <p className="mt-4 text-base leading-7 text-zinc-400">
-            The article you are trying to access does not exist or may have been removed.
-            Try browsing other available articles instead.
+            The article you are trying to access does not exist or may have been
+            removed.
           </p>
 
           <div className="mt-8 flex justify-center gap-3">
@@ -107,6 +113,7 @@ function ArticlePage() {
 
   return (
     <div className="flex w-full flex-col bg-zinc-50 text-zinc-900">
+      {/* HEADER */}
       <section className="border-b border-zinc-200 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto max-w-5xl">
           <div className="mb-6">
@@ -127,6 +134,7 @@ function ArticlePage() {
         </div>
       </section>
 
+      {/* IMAGE */}
       <section className="border-t border-zinc-800 bg-zinc-900 px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl">
           <div className="overflow-hidden rounded-[2rem] border border-zinc-700 bg-zinc-800 p-3 shadow-sm">
@@ -139,13 +147,14 @@ function ArticlePage() {
         </div>
       </section>
 
+      {/* CONTENT */}
       <section className="border-t border-zinc-200 px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
         <div className="mx-auto max-w-3xl">
           <div className="space-y-6">
-            {article.paragraphs.map((paragraph, index) => (
+            {(article.paragraphs || []).map((paragraph, index) => (
               <p
                 key={index}
-                className="text-base leading-8 text-zinc-700 whitespace-pre-wrap"
+                className="whitespace-pre-wrap text-base leading-8 text-zinc-700"
               >
                 {paragraph}
               </p>
