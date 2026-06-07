@@ -1,43 +1,41 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import Button from '../../components/Button.jsx';
-import ArticleList from '../../components/ArticleList.jsx';
+import { useEffect, useState } from "react";
+import Button from "../../components/Button.jsx";
+import ArticleList from "../../components/ArticleList.jsx";
 
-const getApiUrl = () => {
-  try {
-    const meta = Function("return import.meta")();
-    return meta?.env?.VITE_API_URL || "http://localhost:8000/api";
-  } catch {
-    return "http://localhost:8000/api";
-  }
-};
+import { fetchArticles } from "../../services/articleService";
 
 const ArticleListPage = () => {
   const [articles, setArticles] = useState([]);
+
   const [loading, setLoading] = useState(true);
+
   const visibleArticles = articles.filter(
-    (article) => (article.status || "enabled") === "enabled"
+    (article) => (article.status || "enabled") === "enabled",
   );
 
   useEffect(() => {
-    const fetchArticles = async () => {
+    const loadArticles = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(`${getApiUrl()}/articles`);
-        setArticles(data.articles || []);
+
+        const { data } = await fetchArticles();
+
+        setArticles(data.articles || data || []);
       } catch (error) {
         console.error("Error fetching articles:", error);
+
         setArticles([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchArticles();
+    loadArticles();
   }, []);
 
   return (
     <div className="flex w-full flex-col bg-zinc-50 text-zinc-900">
+      {/* HERO */}
       <section className="border-b border-zinc-200 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.28em] text-zinc-500">
@@ -45,25 +43,28 @@ const ArticleListPage = () => {
           </p>
 
           <h1 className="max-w-5xl text-4xl font-bold leading-[0.95] sm:text-5xl lg:text-7xl">
-            Design writeups focused on clarity, structure, and stronger digital presentation.
+            Design writeups focused on clarity, structure, and stronger digital
+            presentation.
           </h1>
 
           <p className="mt-6 max-w-3xl text-base leading-8 text-zinc-600 sm:text-lg">
-            This page gathers article-style content around wireframing, navigation,
-            layout thinking, and visual hierarchy. Each writeup highlights how small
-            design decisions can improve the experience of a page and make it more
-            effective for users.
+            This page gathers article-style content around wireframing,
+            navigation, layout thinking, and visual hierarchy. Each writeup
+            highlights how small design decisions can improve the experience of
+            a page and make it more effective for users.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
             <Button to="/" variant="primary">
               Back Home
             </Button>
+
             <Button to="/about">View About</Button>
           </div>
         </div>
       </section>
 
+      {/* ARTICLES */}
       <section className="border-t border-zinc-800 bg-zinc-900 px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-10 max-w-3xl">
@@ -90,6 +91,7 @@ const ArticleListPage = () => {
         </div>
       </section>
 
+      {/* INSIGHT */}
       <section className="border-t border-zinc-200 px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_0.95fr] lg:items-center">
           <div>
@@ -102,9 +104,10 @@ const ArticleListPage = () => {
             </h2>
 
             <p className="mt-5 max-w-xl text-base leading-8 text-zinc-600">
-              A well-designed page is not only about appearance. It is also about how
-              information is introduced, how sections support one another, and how the
-              overall experience feels from start to finish.
+              A well-designed page is not only about appearance. It is also
+              about how information is introduced, how sections support one
+              another, and how the overall experience feels from start to
+              finish.
             </p>
           </div>
 
