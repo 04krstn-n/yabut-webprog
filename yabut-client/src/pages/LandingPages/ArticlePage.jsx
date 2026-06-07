@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 import Button from "../../components/Button.jsx";
 
-import { fetchArticles } from "../../services/articleService";
+import { fetchArticles } from "../../services/ArticleService";
 
 function ArticlePage() {
   const { slug } = useParams();
